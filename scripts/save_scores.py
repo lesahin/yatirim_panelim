@@ -1,6 +1,8 @@
 import json
 
-from engines.market_engine import calculate_momentum
+from engines.market_engine import (
+    calculate_momentum
+)
 
 from engines.alpha_engine import (
     calculate_alpha_score
@@ -50,9 +52,15 @@ alpha_score = calculate_alpha_score(
 )
 
 result = {
-    "macro_score": round(macro_score, 2),
+    "macro_score": round(
+        macro_score,
+        2
+    ),
     "regime": regime,
-    "alpha_score": round(alpha_score, 2),
+    "alpha_score": round(
+        alpha_score,
+        2
+    ),
     "nasdaq_momentum": round(
         nasdaq_momentum,
         2
