@@ -61,3 +61,12 @@ with c4:
         f"{usdtry:,.2f}",
         f"{usdtry_change}%"
     )
+st.divider()
+
+st.subheader("NASDAQ Son 1 Yıl")
+
+nasdaq_df = pd.read_csv("data/nasdaq.csv")
+
+st.line_chart(
+    nasdaq_df.set_index("Date")["Close"]
+)
