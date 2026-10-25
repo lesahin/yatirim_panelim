@@ -65,4 +65,25 @@ st.divider()
 
 st.header("Piyasa Radarım")
 
-sol, sag
+col_left, col_right = st.columns(2)
+
+with col_left:
+    st.info(
+        "NASDAQ teknoloji sektörünün performansını gösterir. ALTIN güvenli liman talebinin önemli göstergesidir."
+    )
+
+with col_right:
+    st.info(
+        "BRENT küresel ekonomik aktiviteyi temsil eder. USD/TRY Türkiye piyasalarındaki kur riskini yansıtır."
+    )
+
+st.divider()
+
+st.subheader("Piyasalar Hakkında")
+
+st.markdown("""
+- 📈 NASDAQ: ABD teknoloji hisseleri
+- 🪙 ALTIN: Güvenli liman varlığı
+- 🛢️ BRENT: Enerji piyasası göstergesi
+- 💵 USD/TRY: Döviz kuru göstergesi
+""")
