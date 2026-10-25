@@ -124,17 +124,23 @@ def calculate_trend_score(csv_file):
 
     current = close.iloc[-1]
 
-    ema20 = close.ewm(
-        span=20
-    ).mean().iloc[-1]
+    ema20 = (
+        close.ewm(span=20)
+        .mean()
+        .iloc[-1]
+    )
 
-    ema50 = close.ewm(
-        span=50
-    ).mean().iloc[-1]
+    ema50 = (
+        close.ewm(span=50)
+        .mean()
+        .iloc[-1]
+    )
 
-    ema200 = close.ewm(
-        span=200
-    ).mean().iloc[-1]
+    ema200 = (
+        close.ewm(span=200)
+        .mean()
+        .iloc[-1]
+    )
 
     score = 0
 
@@ -172,6 +178,9 @@ def calculate_sharpe(
         returns.std()
         * np.sqrt(252)
     )
+
+    if annual_volatility == 0:
+        return 0
 
     sharpe = (
         annual_return
@@ -212,11 +221,96 @@ def calculate_sortino(
     )
 
     if (
-        downside_volatility == 0
-        or np.isnan(downside_volatility)
+        pd.isna(downside_volatility)
+        or downside_volatility == 0
     ):
         return 0
 
     sortino = (
         annual_return
-        - risk
+        - risk_free_rate
+    ) / downside_volatility
+
+    return round(
+        float(sortino),
+        2
+    )
+
+
+def calculate_max_drawdown(csv_file):
+
+    close = load_close_series(csv_file)
+
+    running_max = close.cummax()
+
+    drawdown = (
+        close - running_max
+    ) / running_max
+
+    max_drawdown = (
+        drawdown.min()
+        * 100
+    )
+
+    return round(
+        float(max_drawdown),
+        2
+    )
+
+
+def calculate_calmar(csv_file):
+
+    close = load_close_series(csv_file)
+
+    returns = (
+        close
+        .pct_change()
+        .dropna()
+    )
+
+    annual_return = (
+        returns.mean()
+        * 252
+    )
+
+    max_drawdown = abs(
+        calculate_max_drawdown(
+            csv_file
+        )
+    ) / 100
+
+    if max_drawdown == 0:
+        return 0
+
+    calmar = (
+        annual_return
+        / max_drawdown
+    )
+
+    return round(
+        float(calmar),
+        2
+    )
+
+
+def calculate_relative_strength(
+    asset_csv,
+    benchmark_csv
+):
+
+    asset = calculate_momentum(
+        asset_csv
+    )
+
+    benchmark = calculate_momentum(
+        benchmark_csv
+    )
+
+    relative_strength = (
+        asset - benchmark
+    )
+
+    return round(
+        relative_strength,
+        2
+    )
