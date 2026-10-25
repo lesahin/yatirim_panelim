@@ -11,16 +11,20 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install packages
         run: |
           pip install pandas numpy
 
       - name: Calculate scores
+        env:
+          PYTHONPATH: .
         run: |
-          PYTHONPATH=. python scripts/save_scores.py
+          python -m scripts.save_scores
