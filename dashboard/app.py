@@ -7,59 +7,57 @@ st.set_page_config(
 )
 
 def get_last_data(symbol):
-    df = yf.download(
-        symbol,
-        period="5d",
-        progress=False,
-        auto_adjust=True
-    )
+    try:
+        df = yf.download(
+            symbol,
+            period="10d",
+            auto_adjust=True,
+            progress=False
+        )
 
-    last_close = float(df["Close"].iloc[-1])
-    prev_close = float(df["Close"].iloc[-2])
+        if df.empty:
+            return "Veri yok", ""
 
-    change_pct = (
-        (last_close - prev_close)
-        / prev_close
-        * 100
-    )
+        close = df["Close"]
 
-    return round(last_close, 2), round(change_pct, 2)
+        if len(close) < 2:
+            return round(float(close.iloc[-1]), 2), ""
+
+        last_price = round(float(close.iloc[-1]), 2)
+        change = round(
+            (
+                float(close.iloc[-1])
+                - float(close.iloc[-2])
+            )
+            / float(close.iloc[-2])
+            * 100,
+            2
+        )
+
+        return last_price, f"{change}%"
+
+    except Exception:
+        return "Hata", ""
 
 st.title("📈 Yatırım Panelim")
 
 st.subheader("Piyasa Özeti")
 
-bist, bist_pct = get_last_data("XU100.IS")
-nasdaq, nasdaq_pct = get_last_data("^IXIC")
-gold, gold_pct = get_last_data("GC=F")
-brent, brent_pct = get_last_data("BZ=F")
-
 col1, col2, col3, col4 = st.columns(4)
 
+bist, bist_change = get_last_data("^XU100")
+nasdaq, nasdaq_change = get_last_data("^IXIC")
+gold, gold_change = get_last_data("GC=F")
+brent, brent_change = get_last_data("BZ=F")
+
 with col1:
-    st.metric(
-        "BIST100",
-        f"{bist:,.2f}",
-        f"{bist_pct}%"
-    )
+    st.metric("BIST100", bist, bist_change)
 
 with col2:
-    st.metric(
-        "NASDAQ",
-        f"{nasdaq:,.2f}",
-        f"{nasdaq_pct}%"
-    )
+    st.metric("NASDAQ", nasdaq, nasdaq_change)
 
 with col3:
-    st.metric(
-        "ALTIN",
-        f"{gold:,.2f}",
-        f"{gold_pct}%"
-    )
+    st.metric("ALTIN", gold, gold_change)
 
 with col4:
-    st.metric(
-        "BRENT",
-        f"{brent:,.2f}",
-        f"{brent_pct}%"
-    )
+    st.metric("BRENT", brent, brent_change)
