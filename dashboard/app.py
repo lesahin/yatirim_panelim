@@ -1,37 +1,61 @@
-import yfinance as yf
+import streamlit as st
 import pandas as pd
-import os
 
-os.makedirs("data", exist_ok=True)
+st.set_page_config(
+    page_title="Yatırım Panelim",
+    layout="wide"
+)
 
-assets = {
-    "nasdaq": "^IXIC",
-    "gold": "GC=F",
-    "brent": "BZ=F",
-    "usdtry": "USDTRY=X"
-}
+def get_last_value(file_name):
 
-for name, symbol in assets.items():
+    df = pd.read_csv(f"data/{file_name}")
 
-    df = yf.download(
-        symbol,
-        period="1y",
-        interval="1d",
-        progress=False,
-        auto_adjust=True
+    close_col = [c for c in df.columns if "Close" in str(c)][0]
+
+    last = float(df[close_col].iloc[-1])
+    prev = float(df[close_col].iloc[-2])
+
+    change = round(
+        ((last - prev) / prev) * 100,
+        2
     )
 
-    df = df.reset_index()
+    return round(last, 2), change
 
-    df.columns = [
-        str(col[0]) if isinstance(col, tuple)
-        else str(col)
-        for col in df.columns
-    ]
 
-    df.to_csv(
-        f"data/{name}.csv",
-        index=False
-    )
+nasdaq, nasdaq_change = get_last_value("nasdaq.csv")
+gold, gold_change = get_last_value("gold.csv")
+brent, brent_change = get_last_value("brent.csv")
+usdtry, usdtry_change = get_last_value("usdtry.csv")
 
-print("Tamamlandı")
+st.title("📈 Yatırım Panelim")
+
+st.subheader("Günlük Piyasa Özeti")
+
+c1, c2, c3, c4 = st.columns(4)
+
+with c1:
+    st.metric("NASDAQ", f"{nasdaq:,.2f}", f"{nasdaq_change}%")
+
+with c2:
+    st.metric("ALTIN", f"{gold:,.2f}", f"{gold_change}%")
+
+with c3:
+    st.metric("BRENT", f"{brent:,.2f}", f"{brent_change}%")
+
+with c4:
+    st.metric("USD/TRY", f"{usdtry:,.2f}", f"{usdtry_change}%")
+
+st.divider()
+
+st.header("Piyasa Radarım")
+
+sol, sag = st.columns(2)
+
+with sol:
+    st.info(
+        """
+NASDAQ teknoloji risk iştahını gösterir.
+
+ALTIN güvenli liman göstergesidir.
+"""
