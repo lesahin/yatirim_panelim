@@ -22,7 +22,6 @@ def get_last_value(file_name):
 
     return round(last, 2), change
 
-
 nasdaq, nasdaq_change = get_last_value("nasdaq.csv")
 gold, gold_change = get_last_value("gold.csv")
 brent, brent_change = get_last_value("brent.csv")
@@ -35,27 +34,35 @@ st.subheader("Günlük Piyasa Özeti")
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
-    st.metric("NASDAQ", f"{nasdaq:,.2f}", f"{nasdaq_change}%")
+    st.metric(
+        "NASDAQ",
+        f"{nasdaq:,.2f}",
+        f"{nasdaq_change}%"
+    )
 
 with c2:
-    st.metric("ALTIN", f"{gold:,.2f}", f"{gold_change}%")
+    st.metric(
+        "ALTIN",
+        f"{gold:,.2f}",
+        f"{gold_change}%"
+    )
 
 with c3:
-    st.metric("BRENT", f"{brent:,.2f}", f"{brent_change}%")
+    st.metric(
+        "BRENT",
+        f"{brent:,.2f}",
+        f"{brent_change}%"
+    )
 
 with c4:
-    st.metric("USD/TRY", f"{usdtry:,.2f}", f"{usdtry_change}%")
+    st.metric(
+        "USD/TRY",
+        f"{usdtry:,.2f}",
+        f"{usdtry_change}%"
+    )
 
 st.divider()
 
 st.header("Piyasa Radarım")
 
-sol, sag = st.columns(2)
-
-with sol:
-    st.info(
-        """
-NASDAQ teknoloji risk iştahını gösterir.
-
-ALTIN güvenli liman göstergesidir.
-"""
+sol, sag
