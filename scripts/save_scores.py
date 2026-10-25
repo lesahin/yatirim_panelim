@@ -84,5 +84,4 @@ nasdaq_trend = calculate_trend_score(
 
 # RELATIVE STRENGTH
 
-nasdaq_relative_strength = (
-    calculate_relative_strength(
+nas
