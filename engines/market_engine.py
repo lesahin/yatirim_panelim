@@ -20,10 +20,12 @@ def load_close_series(csv_file):
 
     close_col = get_close_column(df)
 
-    return pd.to_numeric(
+    close = pd.to_numeric(
         df[close_col],
         errors="coerce"
-    )
+    ).dropna()
+
+    return close
 
 
 def calculate_momentum(csv_file):
@@ -40,10 +42,7 @@ def calculate_momentum(csv_file):
         * 100
     )
 
-    return round(
-        momentum,
-        2
-    )
+    return round(momentum, 2)
 
 
 def calculate_daily_change(csv_file):
@@ -60,10 +59,7 @@ def calculate_daily_change(csv_file):
         * 100
     )
 
-    return round(
-        change,
-        2
-    )
+    return round(change, 2)
 
 
 def calculate_volatility(csv_file):
@@ -78,10 +74,7 @@ def calculate_volatility(csv_file):
         * 100
     )
 
-    return round(
-        volatility,
-        2
-    )
+    return round(volatility, 2)
 
 
 def calculate_rsi(
@@ -153,43 +146,4 @@ def calculate_trend_score(csv_file):
         score += 30
 
     if current > ema50:
-        score += 30
-
-    if current > ema200:
-        score += 40
-
-    return score
-
-
-def calculate_sharpe(
-    csv_file,
-    risk_free_rate=0.03
-):
-
-    close = load_close_series(csv_file)
-
-    returns = (
-        close
-        .pct_change()
-        .dropna()
-    )
-
-    annual_return = (
-        returns.mean()
-        * 252
-    )
-
-    annual_volatility = (
-        returns.std()
-        * np.sqrt(252)
-    )
-
-    sharpe = (
-        annual_return
-        - risk_free_rate
-    ) / annual_volatility
-
-    return round(
-        float(sharpe),
-        2
-    )
+        score +=
