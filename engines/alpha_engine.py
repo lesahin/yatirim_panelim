@@ -1,0 +1,18 @@
+def calculate_alpha_score(
+    momentum,
+    macro,
+    risk,
+    relative_strength,
+    volatility,
+    liquidity
+):
+    score = (
+        momentum * 0.25 +
+        macro * 0.20 +
+        risk * 0.20 +
+        relative_strength * 0.15 +
+        volatility * 0.10 +
+        liquidity * 0.10
+    )
+
+    return round(score, 2)
