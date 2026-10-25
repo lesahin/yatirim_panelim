@@ -1,0 +1,16 @@
+ {
+  "market_assets": [
+    "nasdaq",
+    "gold",
+    "brent",
+    "usdtry"
+  ],
+
+  "turkish_equities": [
+    "thyao",
+    "asels",
+    "tuprs",
+    "bimas",
+    "kchol"
+  ]
+}
