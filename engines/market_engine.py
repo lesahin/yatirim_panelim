@@ -20,12 +20,10 @@ def load_close_series(csv_file):
 
     close_col = get_close_column(df)
 
-    close = pd.to_numeric(
+    return pd.to_numeric(
         df[close_col],
         errors="coerce"
     ).dropna()
-
-    return close
 
 
 def calculate_momentum(csv_file):
@@ -33,7 +31,6 @@ def calculate_momentum(csv_file):
     close = load_close_series(csv_file)
 
     current = close.iloc[-1]
-
     previous = close.iloc[-22]
 
     momentum = (
@@ -50,7 +47,6 @@ def calculate_daily_change(csv_file):
     close = load_close_series(csv_file)
 
     current = close.iloc[-1]
-
     previous = close.iloc[-2]
 
     change = (
@@ -146,4 +142,81 @@ def calculate_trend_score(csv_file):
         score += 30
 
     if current > ema50:
-        score +=
+        score += 30
+
+    if current > ema200:
+        score += 40
+
+    return score
+
+
+def calculate_sharpe(
+    csv_file,
+    risk_free_rate=0.03
+):
+
+    close = load_close_series(csv_file)
+
+    returns = (
+        close
+        .pct_change()
+        .dropna()
+    )
+
+    annual_return = (
+        returns.mean()
+        * 252
+    )
+
+    annual_volatility = (
+        returns.std()
+        * np.sqrt(252)
+    )
+
+    sharpe = (
+        annual_return
+        - risk_free_rate
+    ) / annual_volatility
+
+    return round(
+        float(sharpe),
+        2
+    )
+
+
+def calculate_sortino(
+    csv_file,
+    risk_free_rate=0.03
+):
+
+    close = load_close_series(csv_file)
+
+    returns = (
+        close
+        .pct_change()
+        .dropna()
+    )
+
+    annual_return = (
+        returns.mean()
+        * 252
+    )
+
+    downside_returns = returns[
+        returns < 0
+    ]
+
+    downside_volatility = (
+        downside_returns.std()
+        * np.sqrt(252)
+    )
+
+    if (
+        downside_volatility == 0
+        or np.isnan(downside_volatility)
+    ):
+        return 0
+
+    sortino = (
+        annual_return
+        - risk
