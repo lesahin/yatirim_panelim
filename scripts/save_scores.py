@@ -311,3 +311,13 @@ print(
         indent=4
     )
 )
+import os
+
+print("CURRENT DIR:", os.getcwd())
+
+print(
+    "JSON PATH:",
+    os.path.abspath(
+        "data/scores/latest_score.json"
+    )
+)
