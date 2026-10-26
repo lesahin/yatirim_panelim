@@ -24,11 +24,12 @@ jobs:
 
       - name: Install packages
         run: |
-          pip install pandas numpy
+          pip install pandas numpy requests
 
       - name: Calculate scores
         env:
           PYTHONPATH: .
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
           python -m scripts.save_scores
 
