@@ -3,6 +3,9 @@ name: Calculate Scores
 on:
   workflow_dispatch
 
+permissions:
+  contents: write
+
 jobs:
 
   score:
@@ -28,3 +31,14 @@ jobs:
           PYTHONPATH: .
         run: |
           python -m scripts.save_scores
+
+      - name: Commit updated scores
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git add data/scores/latest_score.json
+
+          git diff --staged --quiet || git commit -m "Update latest_score.json"
+
+          git push
