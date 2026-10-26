@@ -14,7 +14,7 @@ st.set_page_config(
 
 st.title("🏠 Alpha Terminal")
 
-# SATIR 1
+# ÜST SATIR
 
 c1, c2, c3 = st.columns(3)
 
@@ -26,7 +26,7 @@ with c1:
 
 with c2:
     st.metric(
-        "Rejim",
+        "Piyasa Rejimi",
         score["regime"]
     )
 
@@ -38,68 +38,62 @@ with c3:
 
 st.divider()
 
-# SATIR 2
+# MAKRO SATIRI
 
-c4, c5, c6 = st.columns(3)
+c4, c5, c6, c7, c8 = st.columns(5)
 
 with c4:
+    st.metric(
+        "Enflasyon",
+        score["inflation_score"]
+    )
+
+with c5:
+    st.metric(
+        "Likidite",
+        score["liquidity_score"]
+    )
+
+with c6:
+    st.metric(
+        "Büyüme",
+        score["growth_score"]
+    )
+
+with c7:
+    st.metric(
+        "Tahvil",
+        score["bond_score"]
+    )
+
+with c8:
+    st.metric(
+        "Dolar",
+        score["dollar_score"]
+    )
+
+st.divider()
+
+# TEKNİK ANALİZ
+
+c9, c10, c11, c12 = st.columns(4)
+
+with c9:
     st.metric(
         "Momentum",
         score["nasdaq_momentum"]
     )
 
-with c5:
+with c10:
     st.metric(
         "RSI",
         score["nasdaq_rsi"]
     )
 
-with c6:
-    st.metric(
-        "Trend Skoru",
-        score["nasdaq_trend"]
-    )
-
-st.divider()
-
-# SATIR 3
-
-c7, c8, c9 = st.columns(3)
-
-with c7:
-    st.metric(
-        "Volatilite",
-        score["nasdaq_volatility"]
-    )
-
-with c8:
-    st.metric(
-        "Sharpe",
-        score["nasdaq_sharpe"]
-    )
-
-with c9:
-    st.metric(
-        "Sortino",
-        score["nasdaq_sortino"]
-    )
-
-st.divider()
-
-# SATIR 4
-
-c10, c11, c12 = st.columns(3)
-
-with c10:
-    st.metric(
-        "Max Drawdown",
-        score["nasdaq_max_drawdown"]
-    )
-
 with c11:
     st.metric(
-        "Calmar",
-        score["nasdaq_calmar"]
+        "Trend",
+        score["nasdaq_trend"]
     )
 
 with c12:
@@ -110,35 +104,93 @@ with c12:
 
 st.divider()
 
-st.subheader("Analiz Özeti")
+# RİSK ANALİZİ
 
-trend = score["nasdaq_trend"]
-rsi = score["nasdaq_rsi"]
+c13, c14, c15, c16 = st.columns(4)
 
-if trend >= 80:
-    trend_text = "Güçlü Trend"
-elif trend >= 50:
-    trend_text = "Orta Trend"
-else:
-    trend_text = "Zayıf Trend"
+with c13:
+    st.metric(
+        "Volatilite",
+        score["nasdaq_volatility"]
+    )
 
-if rsi >= 70:
-    rsi_text = "Aşırı Alım"
-elif rsi <= 30:
-    rsi_text = "Aşırı Satım"
-else:
-    rsi_text = "Nötr"
+with c14:
+    st.metric(
+        "Sharpe",
+        score["nasdaq_sharpe"]
+    )
+
+with c15:
+    st.metric(
+        "Sortino",
+        score["nasdaq_sortino"]
+    )
+
+with c16:
+    st.metric(
+        "Calmar",
+        score["nasdaq_calmar"]
+    )
+
+st.divider()
+
+# DRAWDOWN
+
+st.metric(
+    "Max Drawdown",
+    score["nasdaq_max_drawdown"]
+)
+
+st.divider()
+
+# PORTFÖY ÖNERİSİ
+
+st.subheader("Önerilen Portföy Dağılımı")
+
+c17, c18, c19, c20 = st.columns(4)
+
+with c17:
+    st.metric(
+        "Hisse %",
+        score["recommended_equity"]
+    )
+
+with c18:
+    st.metric(
+        "Fon %",
+        score["recommended_fund"]
+    )
+
+with c19:
+    st.metric(
+        "Altın %",
+        score["recommended_gold"]
+    )
+
+with c20:
+    st.metric(
+        "Nakit %",
+        score["recommended_cash"]
+    )
+
+st.divider()
+
+# ÖZET
+
+st.subheader("Genel Durum")
 
 st.info(
     f"""
-Trend Durumu: {trend_text}
+Makro Skor: {score['macro_score']}
 
-RSI Durumu: {rsi_text}
+Rejim: {score['regime']}
 
-Sharpe: {score["nasdaq_sharpe"]}
+Alpha Skoru: {score['alpha_score']}
 
-Sortino: {score["nasdaq_sortino"]}
+RSI: {score['nasdaq_rsi']}
 
-Alpha Skoru: {score["alpha_score"]}
+Trend: {score['nasdaq_trend']}
+
+Sharpe: {score['nasdaq_sharpe']}
 """
 )
