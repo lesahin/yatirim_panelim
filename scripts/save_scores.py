@@ -17,6 +17,12 @@ from engines.alpha_engine import (
 )
 
 from engines.macro_engine import (
+    get_cpi_yoy,
+    get_core_cpi_yoy,
+    get_fed_rate,
+    get_unemployment,
+    get_10y_treasury,
+    get_2y_treasury,
     calculate_inflation_score,
     calculate_liquidity_score,
     calculate_growth_score,
@@ -81,7 +87,28 @@ nasdaq_trend = calculate_trend_score(
 )
 
 # -----------------
-# MACRO ANALYSIS
+# MACRO DATA
+# -----------------
+
+cpi_yoy = get_cpi_yoy()
+
+core_cpi_yoy = get_core_cpi_yoy()
+
+fed_rate = get_fed_rate()
+
+unemployment = get_unemployment()
+
+ten_year = get_10y_treasury()
+
+two_year = get_2y_treasury()
+
+yield_curve = round(
+    ten_year - two_year,
+    2
+)
+
+# -----------------
+# MACRO SCORES
 # -----------------
 
 inflation_score = (
@@ -114,4 +141,184 @@ macro_score = (
     )
 )
 
-# ----------------
+# -----------------
+# REGIME
+# -----------------
+
+regime = detect_regime(
+    macro_score
+)
+
+# -----------------
+# PORTFOLIO
+# -----------------
+
+if regime == "RISK_ON":
+
+    recommended_equity = 50
+    recommended_fund = 25
+    recommended_gold = 15
+    recommended_cash = 10
+
+elif regime == "GROWTH":
+
+    recommended_equity = 35
+    recommended_fund = 35
+    recommended_gold = 20
+    recommended_cash = 10
+
+elif regime == "CAUTION":
+
+    recommended_equity = 25
+    recommended_fund = 35
+    recommended_gold = 30
+    recommended_cash = 10
+
+else:
+
+    recommended_equity = 10
+    recommended_fund = 30
+    recommended_gold = 40
+    recommended_cash = 20
+
+# -----------------
+# ALPHA
+# -----------------
+
+alpha_score = calculate_alpha_score(
+    momentum=nasdaq_momentum,
+    macro=macro_score,
+    risk=max(
+        0,
+        100 - abs(
+            nasdaq_max_drawdown
+        )
+    ),
+    relative_strength=max(
+        0,
+        nasdaq_relative_strength + 50
+    ),
+    volatility=max(
+        0,
+        100 - nasdaq_volatility
+    ),
+    liquidity=liquidity_score
+)
+
+# -----------------
+# OUTPUT
+# -----------------
+
+result = {
+
+    "macro_score": round(
+        macro_score,
+        2
+    ),
+
+    "inflation_score": inflation_score,
+    "liquidity_score": liquidity_score,
+    "growth_score": growth_score,
+    "bond_score": bond_score,
+    "dollar_score": dollar_score,
+
+    "cpi_yoy": cpi_yoy,
+    "core_cpi_yoy": core_cpi_yoy,
+    "fed_rate": fed_rate,
+    "unemployment": unemployment,
+    "ten_year": ten_year,
+    "two_year": two_year,
+    "yield_curve": yield_curve,
+
+    "regime": regime,
+
+    "recommended_equity":
+        recommended_equity,
+
+    "recommended_fund":
+        recommended_fund,
+
+    "recommended_gold":
+        recommended_gold,
+
+    "recommended_cash":
+        recommended_cash,
+
+    "alpha_score": round(
+        alpha_score,
+        2
+    ),
+
+    "nasdaq_momentum": round(
+        nasdaq_momentum,
+        2
+    ),
+
+    "gold_momentum": round(
+        gold_momentum,
+        2
+    ),
+
+    "brent_momentum": round(
+        brent_momentum,
+        2
+    ),
+
+    "nasdaq_rsi": round(
+        nasdaq_rsi,
+        2
+    ),
+
+    "nasdaq_volatility": round(
+        nasdaq_volatility,
+        2
+    ),
+
+    "nasdaq_sharpe": round(
+        nasdaq_sharpe,
+        2
+    ),
+
+    "nasdaq_sortino": round(
+        nasdaq_sortino,
+        2
+    ),
+
+    "nasdaq_calmar": round(
+        nasdaq_calmar,
+        2
+    ),
+
+    "nasdaq_max_drawdown": round(
+        nasdaq_max_drawdown,
+        2
+    ),
+
+    "nasdaq_relative_strength": round(
+        nasdaq_relative_strength,
+        2
+    ),
+
+    "nasdaq_trend": round(
+        nasdaq_trend,
+        2
+    )
+}
+
+with open(
+    "data/scores/latest_score.json",
+    "w"
+) as file:
+
+    json.dump(
+        result,
+        file,
+        indent=4
+    )
+
+print(
+    json.dumps(
+        result,
+        indent=4
+    )
+)
