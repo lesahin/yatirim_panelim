@@ -11,7 +11,7 @@ BASE_URL = (
 )
 
 
-def get_fred_value(series_id):
+def get_fred_series(series_id):
 
     response = requests.get(
         BASE_URL,
@@ -27,9 +27,14 @@ def get_fred_value(series_id):
 
     data = response.json()
 
-    observations = data[
-        "observations"
-    ]
+    return data["observations"]
+
+
+def get_latest_value(series_id):
+
+    observations = get_fred_series(
+        series_id
+    )
 
     latest = observations[-1]
 
@@ -38,62 +43,103 @@ def get_fred_value(series_id):
     )
 
 
-def get_cpi():
+def get_cpi_yoy():
 
-    return get_fred_value(
+    observations = get_fred_series(
         "CPIAUCSL"
     )
 
+    current = float(
+        observations[-1]["value"]
+    )
 
-def get_core_cpi():
+    one_year_ago = float(
+        observations[-13]["value"]
+    )
 
-    return get_fred_value(
+    yoy = (
+        (current - one_year_ago)
+        / one_year_ago
+        * 100
+    )
+
+    return round(
+        yoy,
+        2
+    )
+
+
+def get_core_cpi_yoy():
+
+    observations = get_fred_series(
         "CPILFESL"
+    )
+
+    current = float(
+        observations[-1]["value"]
+    )
+
+    one_year_ago = float(
+        observations[-13]["value"]
+    )
+
+    yoy = (
+        (current - one_year_ago)
+        / one_year_ago
+        * 100
+    )
+
+    return round(
+        yoy,
+        2
     )
 
 
 def get_fed_rate():
 
-    return get_fred_value(
+    return get_latest_value(
         "FEDFUNDS"
     )
 
 
 def get_unemployment():
 
-    return get_fred_value(
+    return get_latest_value(
         "UNRATE"
     )
 
 
 def get_10y_treasury():
 
-    return get_fred_value(
+    return get_latest_value(
         "GS10"
     )
 
 
 def get_2y_treasury():
 
-    return get_fred_value(
+    return get_latest_value(
         "GS2"
     )
 
 
 def calculate_inflation_score():
 
-    cpi = get_cpi()
+    inflation = get_cpi_yoy()
 
-    if cpi < 250:
-        return 90
+    if inflation < 2:
+        return 100
 
-    elif cpi < 300:
-        return 75
+    elif inflation < 3:
+        return 85
 
-    elif cpi < 350:
-        return 60
+    elif inflation < 4:
+        return 70
 
-    return 40
+    elif inflation < 6:
+        return 50
+
+    return 25
 
 
 def calculate_liquidity_score():
@@ -103,13 +149,16 @@ def calculate_liquidity_score():
     if fed < 2:
         return 100
 
+    elif fed < 3:
+        return 85
+
     elif fed < 4:
-        return 80
+        return 70
 
     elif fed < 5:
-        return 60
+        return 55
 
-    return 40
+    return 35
 
 
 def calculate_growth_score():
@@ -140,18 +189,21 @@ def calculate_bond_score():
     )
 
     if spread > 1:
-        return 90
+        return 100
 
     elif spread > 0:
-        return 70
+        return 75
 
-    elif spread > -1:
+    elif spread > -0.5:
         return 50
 
     return 25
 
 
 def calculate_dollar_score():
+
+    # v0.6 geçici skor
+    # Bir sonraki aşamada DXY API bağlanacak
 
     return 60
 
