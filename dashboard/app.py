@@ -1,170 +1,49 @@
-import streamlit as st
-import json
-
-st.set_page_config(
-    page_title="Alpha Terminal",
-    layout="wide"
-)
-
-with open(
-    "data/scores/latest_score.json"
-) as f:
-
-    score = json.load(f)
-
-st.title("🏠 Alpha Terminal")
-
-# ÜST SATIR
-
-c1, c2, c3 = st.columns(3)
-
-with c1:
-    st.metric(
-        "Makro Skor",
-        score["macro_score"]
-    )
-
-with c2:
-    st.metric(
-        "Piyasa Rejimi",
-        score["regime"]
-    )
-
-with c3:
-    st.metric(
-        "Alpha Skoru",
-        score["alpha_score"]
-    )
-
 st.divider()
 
-# MAKRO
+st.subheader("📊 Gerçek Makro Veriler")
 
-c4, c5, c6, c7, c8 = st.columns(5)
+c21, c22, c23 = st.columns(3)
 
-with c4:
+with c21:
     st.metric(
-        "Enflasyon",
-        score["inflation_score"]
+        "CPI YoY %",
+        score["cpi_yoy"]
     )
 
-with c5:
+with c22:
     st.metric(
-        "Likidite",
-        score["liquidity_score"]
+        "Core CPI %",
+        score["core_cpi_yoy"]
     )
 
-with c6:
+with c23:
     st.metric(
-        "Büyüme",
-        score["growth_score"]
+        "FED Funds %",
+        score["fed_rate"]
     )
 
-with c7:
+c24, c25, c26, c27 = st.columns(4)
+
+with c24:
     st.metric(
-        "Tahvil",
-        score["bond_score"]
+        "İşsizlik %",
+        score["unemployment"]
     )
 
-with c8:
+with c25:
     st.metric(
-        "Dolar",
-        score["dollar_score"]
+        "10Y Treasury %",
+        score["ten_year"]
     )
 
-st.divider()
-
-# TEKNİK
-
-c9, c10, c11, c12 = st.columns(4)
-
-with c9:
+with c26:
     st.metric(
-        "Momentum",
-        score["nasdaq_momentum"]
+        "2Y Treasury %",
+        score["two_year"]
     )
 
-with c10:
+with c27:
     st.metric(
-        "RSI",
-        score["nasdaq_rsi"]
-    )
-
-with c11:
-    st.metric(
-        "Trend",
-        score["nasdaq_trend"]
-    )
-
-with c12:
-    st.metric(
-        "Relative Strength",
-        score["nasdaq_relative_strength"]
-    )
-
-st.divider()
-
-# RİSK
-
-c13, c14, c15, c16 = st.columns(4)
-
-with c13:
-    st.metric(
-        "Volatilite",
-        score["nasdaq_volatility"]
-    )
-
-with c14:
-    st.metric(
-        "Sharpe",
-        score["nasdaq_sharpe"]
-    )
-
-with c15:
-    st.metric(
-        "Sortino",
-        score["nasdaq_sortino"]
-    )
-
-with c16:
-    st.metric(
-        "Calmar",
-        score["nasdaq_calmar"]
-    )
-
-st.divider()
-
-st.metric(
-    "Max Drawdown",
-    score["nasdaq_max_drawdown"]
-)
-
-st.divider()
-
-st.subheader("Önerilen Portföy Dağılımı")
-
-c17, c18, c19, c20 = st.columns(4)
-
-with c17:
-    st.metric(
-        "Hisse %",
-        score["recommended_equity"]
-    )
-
-with c18:
-    st.metric(
-        "Fon %",
-        score["recommended_fund"]
-    )
-
-with c19:
-    st.metric(
-        "Altın %",
-        score["recommended_gold"]
-    )
-
-with c20:
-    st.metric(
-        "Nakit %",
-        score["recommended_cash"]
+        "Yield Curve",
+        score["yield_curve"]
     )
