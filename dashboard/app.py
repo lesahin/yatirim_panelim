@@ -1,89 +1,170 @@
 import streamlit as st
-import pandas as pd
+import json
 
 st.set_page_config(
-    page_title="Yatırım Panelim",
+    page_title="Alpha Terminal",
     layout="wide"
 )
 
-def get_last_value(file_name):
+with open(
+    "data/scores/latest_score.json"
+) as f:
 
-    df = pd.read_csv(f"data/{file_name}")
+    score = json.load(f)
 
-    close_col = [c for c in df.columns if "Close" in str(c)][0]
+st.title("🏠 Alpha Terminal")
 
-    last = float(df[close_col].iloc[-1])
-    prev = float(df[close_col].iloc[-2])
+# ÜST SATIR
 
-    change = round(
-        ((last - prev) / prev) * 100,
-        2
-    )
-
-    return round(last, 2), change
-
-nasdaq, nasdaq_change = get_last_value("nasdaq.csv")
-gold, gold_change = get_last_value("gold.csv")
-brent, brent_change = get_last_value("brent.csv")
-usdtry, usdtry_change = get_last_value("usdtry.csv")
-
-st.title("📈 Yatırım Panelim")
-
-st.subheader("Günlük Piyasa Özeti")
-
-c1, c2, c3, c4 = st.columns(4)
+c1, c2, c3 = st.columns(3)
 
 with c1:
     st.metric(
-        "NASDAQ",
-        f"{nasdaq:,.2f}",
-        f"{nasdaq_change}%"
+        "Makro Skor",
+        score["macro_score"]
     )
 
 with c2:
     st.metric(
-        "ALTIN",
-        f"{gold:,.2f}",
-        f"{gold_change}%"
+        "Piyasa Rejimi",
+        score["regime"]
     )
 
 with c3:
     st.metric(
-        "BRENT",
-        f"{brent:,.2f}",
-        f"{brent_change}%"
+        "Alpha Skoru",
+        score["alpha_score"]
     )
+
+st.divider()
+
+# MAKRO
+
+c4, c5, c6, c7, c8 = st.columns(5)
 
 with c4:
     st.metric(
-        "USD/TRY",
-        f"{usdtry:,.2f}",
-        f"{usdtry_change}%"
+        "Enflasyon",
+        score["inflation_score"]
+    )
+
+with c5:
+    st.metric(
+        "Likidite",
+        score["liquidity_score"]
+    )
+
+with c6:
+    st.metric(
+        "Büyüme",
+        score["growth_score"]
+    )
+
+with c7:
+    st.metric(
+        "Tahvil",
+        score["bond_score"]
+    )
+
+with c8:
+    st.metric(
+        "Dolar",
+        score["dollar_score"]
     )
 
 st.divider()
 
-st.header("Piyasa Radarım")
+# TEKNİK
 
-col_left, col_right = st.columns(2)
+c9, c10, c11, c12 = st.columns(4)
 
-with col_left:
-    st.info(
-        "NASDAQ teknoloji sektörünün performansını gösterir. ALTIN güvenli liman talebinin önemli göstergesidir."
+with c9:
+    st.metric(
+        "Momentum",
+        score["nasdaq_momentum"]
     )
 
-with col_right:
-    st.info(
-        "BRENT küresel ekonomik aktiviteyi temsil eder. USD/TRY Türkiye piyasalarındaki kur riskini yansıtır."
+with c10:
+    st.metric(
+        "RSI",
+        score["nasdaq_rsi"]
+    )
+
+with c11:
+    st.metric(
+        "Trend",
+        score["nasdaq_trend"]
+    )
+
+with c12:
+    st.metric(
+        "Relative Strength",
+        score["nasdaq_relative_strength"]
     )
 
 st.divider()
 
-st.subheader("Piyasalar Hakkında")
+# RİSK
 
-st.markdown("""
-- 📈 NASDAQ: ABD teknoloji hisseleri
-- 🪙 ALTIN: Güvenli liman varlığı
-- 🛢️ BRENT: Enerji piyasası göstergesi
-- 💵 USD/TRY: Döviz kuru göstergesi
-""")
+c13, c14, c15, c16 = st.columns(4)
+
+with c13:
+    st.metric(
+        "Volatilite",
+        score["nasdaq_volatility"]
+    )
+
+with c14:
+    st.metric(
+        "Sharpe",
+        score["nasdaq_sharpe"]
+    )
+
+with c15:
+    st.metric(
+        "Sortino",
+        score["nasdaq_sortino"]
+    )
+
+with c16:
+    st.metric(
+        "Calmar",
+        score["nasdaq_calmar"]
+    )
+
+st.divider()
+
+st.metric(
+    "Max Drawdown",
+    score["nasdaq_max_drawdown"]
+)
+
+st.divider()
+
+st.subheader("Önerilen Portföy Dağılımı")
+
+c17, c18, c19, c20 = st.columns(4)
+
+with c17:
+    st.metric(
+        "Hisse %",
+        score["recommended_equity"]
+    )
+
+with c18:
+    st.metric(
+        "Fon %",
+        score["recommended_fund"]
+    )
+
+with c19:
+    st.metric(
+        "Altın %",
+        score["recommended_gold"]
+    )
+
+with c20:
+    st.metric(
+        "Nakit %",
+        score["recommended_cash"]
+    )
